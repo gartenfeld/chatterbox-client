@@ -86,7 +86,7 @@ $(document).ready(function(){
 
   fetchMessages();
   setInterval(fetchMessages, 2000);
-  // Sorts messages by room name 
+  // Sorts messages by room name and stores message to appropriate room
   var sortMessage = function(roomName, message) {
     rooms[roomName] = rooms[roomName] || [];
     rooms[roomName].push(message); 
@@ -116,6 +116,7 @@ $(document).ready(function(){
 
   var displayMessages = function() {
     var arr = rooms[currentRoom];
+    $('.current-room').text('Current Room: ' + currentRoom);
     var $messages = $('<div class="messages"></div>');
     var user, text, time, $line;
 
@@ -173,7 +174,22 @@ $(document).ready(function(){
     $('.username').val('');
     $('.text').val('');
     $('.roomOption').val('');
+  });
 
+  $('.text').on('keypress', function(e){
+    if (e.which === 13) {
+      e.preventDefault();
+      var msg = {
+        username: $('.username').val(),
+        text: $('.text').val(),
+        roomname: $('.roomOption').val() || currentRoom
+      };
+      
+      sendMessage(msg);
+      $('.username').val('');
+      $('.text').val('');
+      $('.roomOption').val('');
+    }
   });
 
   var getUserText = function() {

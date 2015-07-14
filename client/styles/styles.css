@@ -6,7 +6,7 @@ body {
 }
 
 #main {
-    width: 500px;
+    width: 600px;
     margin: auto;
     text-align: left;
     background: white;
@@ -87,10 +87,47 @@ form input[type=text] {
     font-weight: bold;
 }
 
+
+.line {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 7px 0px 7px 0px;
+    background-color: #eee;
+    border-radius: 5px;
+}
+.user {
+    text-decoration: none;
+    text-align: right;
+    width: 100px;
+    display: inline-block;
+    margin-right: 15px;
+    color:blue;
+}
+
+.text {
+    width: 250px;
+}
+
+.time {
+    float: right;
+    font-size: 75%;
+    padding-top: 3px;
+    padding-right: 10px;
+}
 .room {
     text-decoration: none;
     color: #fff;
     float: left;
+    display: block;
+    margin: 0 3px 5px 3px;
+    background-color: #33CCFF;
+    border-radius: 3px;
+    padding: 4px 5px 4px 5px;
+}
+
+.current-room {
+    text-decoration: none;
+    color: #fff;
     display: block;
     margin: 0 3px 5px 3px;
     background-color: #33CCFF;
