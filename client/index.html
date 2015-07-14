@@ -8,6 +8,7 @@
     <!-- dependencies -->
     <script src="bower_components/jquery/jquery.min.js"></script>
     <script src="bower_components/underscore/underscore-min.js"></script>
+    <script src="bower_components/moment/moment.js"></script>
     <!-- your scripts -->
     <script src="env/config.js"></script>
     <script src="scripts/app.js"></script>
@@ -16,9 +17,14 @@
     <div id="main">
       <h1>chatterbox</h1>
       <div class="rooms"></div>
+      <p></p>
       <form action="">
+        Select Username:
+        <input class="username" type="text" placeholder="Whats yo name"> <br>
         Enter Message:<br>
-        <input type="text" placeholder="Write me">
+        <input class="text" type="text" placeholder="Write me"> <br>
+        Select Room: <br>
+        <input class="roomOption" type="text" placeholder="New Room"> <br>
         <a href="#" id="submit">Submit</a>
       </form>
       <div class="messages">

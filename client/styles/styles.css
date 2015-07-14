@@ -83,7 +83,17 @@ form input[type=text] {
     padding: 10px;
 }
 
+.friend-text {
+    font-weight: bold;
+}
+
 .room {
     text-decoration: none;
-    margin: 0 5px 0 5px;
+    color: #fff;
+    float: left;
+    display: block;
+    margin: 0 3px 5px 3px;
+    background-color: #33CCFF;
+    border-radius: 3px;
+    padding: 4px 5px 4px 5px;
 }

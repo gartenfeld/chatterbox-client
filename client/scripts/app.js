@@ -1,10 +1,45 @@
 // YOUR CODE HERE:
+var app = {};
+app.server = 'https://api.parse.com/1/classes/chatterbox';
+app.init = function () {};
+app.send = function (message) {
+  $.ajax({
+    url: 'https://api.parse.com/1/classes/chatterbox',
+    type: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify(message),
+    success: function(data) {
+      console.log('Success!');
+    } 
+  });
+};
+app.fetch = function () {
+  $.ajax({
+    url: 'https://api.parse.com/1/classes/chatterbox',
+    type: 'GET',
+    contentType: 'application/json',
+    success: function (data) {
+      packageMessages(data);
+    }
+  });
+};
+app.clearMessages = function() {
+  $('#chats').empty();
+};
+
+app.addMessage = function(message) {
+  $('#chats').append($('<p></p>').text(message));
+};
+
+app.addRoom = function(room) {
+  $('#roomSelect').append($('<a></a>').text(room));
+}
 
 $(document).ready(function(){
 
   var rooms = {};
   var currentRoom;
-
+  var friends = [];
 
   var fetchMessages = function() {
     $.ajax({
@@ -29,9 +64,15 @@ $(document).ready(function(){
       user = result.username;
       text = result.text;
       time = result.updatedAt;
-      room = result.roomname;
+      room = result.roomname || 'general';
       // $message = $('<p></p>').text(user + ': ' + text + ' ' + time);
-      $message = user + ': ' + text + ' ' + time;
+
+      $message = {
+        user: user,
+        text: text,
+        time: moment(time).fromNow()
+      };
+
       sortMessage(room, $message);
     });
 
@@ -76,12 +117,28 @@ $(document).ready(function(){
   var displayMessages = function() {
     var arr = rooms[currentRoom];
     var $messages = $('<div class="messages"></div>');
+    var user, text, time, $line;
 
     for (var i = 0; i < arr.length; i++) {
-      $messages.append($('<p></p>').text(arr[i]));
+      user = arr[i].user;
+      text = arr[i].text;
+      time = arr[i].time;
+      $line = $('<div class="line"></div>');
+      $line.append($('<a class="user" href="#"></a>').text(user));
+
+      if (friends.indexOf(user) !== -1) {
+        $line.append($('<span class="friend-text"></span>').text(text));
+      } else {
+        $line.append($('<span class="text"></span>').text(text));
+      }
+
+      $line.append($('<span class="time"></span>').text(time));
+
+      $messages.append($line);
     }
 
     $('.messages').replaceWith($messages);
+    getUserText();
   };
 
 
@@ -107,13 +164,24 @@ $(document).ready(function(){
 
   $('#submit').on('click', function() {
     var msg = {
-      username: 'lol',
-      text: $('input').val(),
-      roomname: currentRoom
+      username: $('.username').val(),
+      text: $('.text').val(),
+      roomname: $('.roomOption').val() || currentRoom
     };
     
     sendMessage(msg);
+    $('.username').val('');
+    $('.text').val('');
+    $('.roomOption').val('');
+
   });
+
+  var getUserText = function() {
+    $('.user').on('click', function() {
+      friends.push($(this).text());
+    });  
+  };
+  
 
 });
 
