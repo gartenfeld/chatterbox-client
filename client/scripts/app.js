@@ -171,9 +171,9 @@ $(document).ready(function(){
     };
     
     sendMessage(msg);
-    $('.username').val('');
+    // $('.username').val('');
     $('.text').val('');
-    $('.roomOption').val('');
+    // $('.roomOption').val('');
   });
 
   $('.text').on('keypress', function(e){
@@ -186,9 +186,9 @@ $(document).ready(function(){
       };
       
       sendMessage(msg);
-      $('.username').val('');
+      // $('.username').val('');
       $('.text').val('');
-      $('.roomOption').val('');
+      // $('.roomOption').val('');
     }
   });
 

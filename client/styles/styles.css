@@ -50,6 +50,7 @@ form {
     padding: 20px;
     padding-left: 0;
     margin-bottom: 20px;
+    clear:both;
 }
 
 form input[type=text] {
@@ -87,6 +88,11 @@ form input[type=text] {
     font-weight: bold;
 }
 
+.label {
+    display: inline-block;
+    width: 100px;
+    text-align: right;
+}
 
 .line {
     margin-top: 5px;
@@ -95,13 +101,17 @@ form input[type=text] {
     background-color: #eee;
     border-radius: 5px;
 }
+
+.line:nth-child(even) {
+    background-color: #FFFFCC;
+}
 .user {
     text-decoration: none;
     text-align: right;
     width: 100px;
     display: inline-block;
     margin-right: 15px;
-    color:blue;
+    color: #0066ff;
 }
 
 .text {
@@ -123,6 +133,28 @@ form input[type=text] {
     background-color: #33CCFF;
     border-radius: 3px;
     padding: 4px 5px 4px 5px;
+}
+
+.button-container {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+#submit {
+    display: block;
+    width: 80px;
+    height: 28px;
+    background-color: #0066FF;
+    border-radius: 5px;
+    text-decoration: none;
+    text-align: center;
+    color: #fff;
+    padding-top: 10px;
+    float: right;
+}
+
+#submit:hover {
+    background-color: #7766FF;
 }
 
 .current-room {
