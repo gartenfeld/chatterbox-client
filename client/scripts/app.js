@@ -1,39 +1,8 @@
-// YOUR CODE HERE:
-var app = {};
-app.server = 'https://api.parse.com/1/classes/chatterbox';
-app.init = function () {};
-app.send = function (message) {
-  $.ajax({
-    url: 'https://api.parse.com/1/classes/chatterbox',
-    type: 'POST',
-    contentType: 'application/json',
-    data: JSON.stringify(message),
-    success: function(data) {
-      console.log('Success!');
-    } 
-  });
-};
-app.fetch = function () {
-  $.ajax({
-    url: 'https://api.parse.com/1/classes/chatterbox',
-    type: 'GET',
-    contentType: 'application/json',
-    success: function (data) {
-      packageMessages(data);
-    }
-  });
-};
-app.clearMessages = function() {
-  $('#chats').empty();
-};
 
-app.addMessage = function(message) {
-  $('#chats').append($('<p></p>').text(message));
-};
 
-app.addRoom = function(room) {
-  $('#roomSelect').append($('<a></a>').text(room));
-}
+
+
+
 
 $(document).ready(function(){
 
@@ -41,164 +10,164 @@ $(document).ready(function(){
   var currentRoom;
   var friends = [];
 
-  var fetchMessages = function() {
-    $.ajax({
-      url: 'https://api.parse.com/1/classes/chatterbox',
-      type: 'GET',
-      contentType: 'application/json',
-      success: function (data) {
-        // console.log(data);
-        packageMessages(data);
+  var app = {
+
+    server: 'https://api.parse.com/1/classes/chatterbox',
+
+    send: function (message) {
+      var body = JSON.stringify(message);
+      $.ajax({
+        url: this.server,
+        type: 'POST',
+        contentType: 'application/json',
+        data: body
+      });
+    },
+
+    fetch: function () {
+      var app = this;
+      $.ajax({
+        url: this.server,
+        type: 'GET',
+        contentType: 'application/json',
+        success: function (data) {
+          app.packageMessages(data);
+        }
+      });
+    },
+    
+    clearMessages: function() {
+      $('#chats').empty();
+    },
+
+    addMessage: function (message) {
+      $('#chats').append($('<p></p>').text(message));
+    },
+
+    clearRooms: function() {
+      for (var roomName in rooms) {
+        rooms[roomName] = [];
       }
-    });
-  };
+    },
 
-  var packageMessages = function (data) {
-    var results = data.results;
-    var user, text, time, $message;
-    var room;
+    addRoom: function (room) {
+      $('#roomSelect').append($('<a></a>').text(room));
+    },
 
-    clearRooms();
+    packageMessages: function (data) {
+      var results = data.results;
+      var user, text, time, $message;
+      var room;
 
-    _(results).each(function(result){
-      user = result.username;
-      text = result.text;
-      time = result.updatedAt;
-      room = result.roomname || 'general';
-      // $message = $('<p></p>').text(user + ': ' + text + ' ' + time);
+      this.clearRooms();
 
-      $message = {
-        user: user,
-        text: text,
-        time: moment(time).fromNow()
-      };
+      var app = this;
+      _(results).each(function(result){
+        user = result.username;
+        text = result.text;
+        time = result.updatedAt;
+        room = result.roomname || 'nameless';
+        $message = {
+          user: user,
+          text: text,
+          time: moment(time).fromNow()
+        };
+        app.sortMessage(room, $message);
+      });
 
-      sortMessage(room, $message);
-    });
+      this.updateRoomLinks();
+      currentRoom = currentRoom || this.getFirstRoom();
+      this.displayMessages();
+    
+    },
 
+    sortMessage: function (roomName, message) {
+      rooms[roomName] = rooms[roomName] || [];
+      rooms[roomName].push(message); 
+    },
 
-    updateRoomLinks();
+    updateRoomLinks: function() {
+      var $rooms = $('.rooms');
+      $rooms.empty();
+      for (var roomName in rooms) {
+        if (roomName === currentRoom) {
+          $rooms.append($('<a class="room current" href="#"></a>').text(roomName));
+        } else {
+          $rooms.append($('<a class="room" href="#"></a>').text(roomName));
+        }
+      }
+      this.addListeners();
+    },
 
-    currentRoom = currentRoom || getFirstRoom();
-    displayMessages();
-
-  };
-
-  fetchMessages();
-  setInterval(fetchMessages, 2000);
-  // Sorts messages by room name and stores message to appropriate room
-  var sortMessage = function(roomName, message) {
-    rooms[roomName] = rooms[roomName] || [];
-    rooms[roomName].push(message); 
-  };
-
-  var clearRooms = function() {
-    for (var roomName in rooms) {
-      rooms[roomName] = [];
-    }
-  };
-
-  var updateRoomLinks = function() {
-    var linkBar = $("<div class='rooms'></div>");
-
-    for (var roomName in rooms) {
-      linkBar.append($('<a class="room" href="#"></a>').text(roomName));
-    }
-    $('.rooms').replaceWith(linkBar);
-    addListeners();
-  };
-
-  var getFirstRoom = function() {
-    for (var roomName in rooms) {
-      return roomName;
-    }
-  };
-
-  var displayMessages = function() {
-    var arr = rooms[currentRoom];
-    $('.current-room').text('Current Room: ' + currentRoom);
-    var $messages = $('<div class="messages"></div>');
-    var user, text, time, $line;
-
-    for (var i = 0; i < arr.length; i++) {
-      user = arr[i].user;
-      text = arr[i].text;
-      time = arr[i].time;
-      $line = $('<div class="line"></div>');
-      $line.append($('<a class="user" href="#"></a>').text(user));
-
-      if (friends.indexOf(user) !== -1) {
-        $line.append($('<span class="friend-text"></span>').text(text));
+    getFirstRoom: function() {
+      if (Object.keys(rooms)[0]) {
+        return Object.keys(rooms)[0];
       } else {
-        $line.append($('<span class="text"></span>').text(text));
+        return 'Lobby';
       }
+    },
 
-      $line.append($('<span class="time"></span>').text(time));
+    displayMessages: function() {
+      var log = rooms[currentRoom];
+      var $messages = $('.messages');
+      var user, text, time, $line;
+      $messages.empty();
 
-      $messages.append($line);
+      for (var i = 0; i < log.length; i++) {
+        user = log[i].user;
+        text = log[i].text;
+        time = log[i].time;
+        $line = $('<div class="line"></div>');
+        $line.append($('<a class="user" href="#"></a>').text(user));
+        if (friends.indexOf(user) !== -1) {
+          $line.append($('<span class="friend-text"></span>').text(text));
+        } else {
+          $line.append($('<span class="text"></span>').text(text));
+        }
+        $line.append($('<span class="time"></span>').text(time));
+        $messages.append($line);
+      }
+      this.addFriendingListener();
+    },
+
+    addListeners: function () {
+      var app = this;
+      $('.room').on('click', function(){
+        currentRoom = $(this).text();
+        app.displayMessages();
+      });
+    },
+
+    addFriendingListener: function() {
+      $('.user').on('click', function() {
+        friends.push($(this).text());
+      });  
+    },
+
+    triggerSend: function() {
+      var msg = {
+        username: $('.username').val() || 'Anon',
+        text: $('.message-text').val(),
+        roomname: $('.room-name').val() || currentRoom
+      };
+      this.send(msg);
+      $('.message-text').val('');
     }
 
-    $('.messages').replaceWith($messages);
-    getUserText();
-  };
-
-
-  // On room name click, go to that room and display those messages
-  var addListeners = function () {
-    $('.room').on('click', function(){
-      currentRoom = $(this).text();
-      displayMessages();
-    });
-  };
-
-  var sendMessage = function(message) {
-    $.ajax({
-      url: 'https://api.parse.com/1/classes/chatterbox',
-      type: 'POST',
-      contentType: 'application/json',
-      data: JSON.stringify(message),
-      success: function(data) {
-        console.log('Success!');
-      } 
-    });
-  };
+  }; // app
 
   $('#submit').on('click', function() {
-    var msg = {
-      username: $('.username').val(),
-      text: $('.text').val(),
-      roomname: $('.roomOption').val() || currentRoom
-    };
-    
-    sendMessage(msg);
-    // $('.username').val('');
-    $('.text').val('');
-    // $('.roomOption').val('');
+    app.triggerSend();
   });
 
-  $('.text').on('keypress', function(e){
+  $('.message-text').on('keypress', function(e){
     if (e.which === 13) {
       e.preventDefault();
-      var msg = {
-        username: $('.username').val(),
-        text: $('.text').val(),
-        roomname: $('.roomOption').val() || currentRoom
-      };
-      
-      sendMessage(msg);
-      // $('.username').val('');
-      $('.text').val('');
-      // $('.roomOption').val('');
+      app.triggerSend();
     }
   });
 
-  var getUserText = function() {
-    $('.user').on('click', function() {
-      friends.push($(this).text());
-    });  
-  };
-  
+  app.fetch();
+  setInterval(app.fetch.bind(app), 2000);
 
 });
-
-

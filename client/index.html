@@ -2,34 +2,34 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>chatterbox</title>
+    <title>Chatterbox Client</title>
     <link rel="stylesheet" href="styles/styles.css">
 
     <!-- dependencies -->
-    <script src="bower_components/jquery/jquery.min.js"></script>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/underscore/underscore-min.js"></script>
     <script src="bower_components/moment/moment.js"></script>
     <!-- your scripts -->
     <script src="env/config.js"></script>
     <script src="scripts/app.js"></script>
+
   </head>
   <body>
     <div id="main">
-      <h1>chatterbox</h1>
+      <h1 class="title">Chatterbox</h1> 
+      <input class="username" placeholder="Username"> <br>
+
+
       <div class="rooms"></div>
-      <p></p>
-      <form>
-        <span class="label">Username:</span>
-        <input class="username" type="text" placeholder="Whats yo name"> <br>
-        <span class="label">Message:</span>
-        <input class="text" type="text" placeholder="Write me"> <br>
-        <span class="label">Room:</span>
-        <input class="roomOption" type="text" placeholder="New Room"> <br>
-        <div class="button-container">
-          <a href="#" id="submit">Submit</a>
-        </div>
-      </form>
-      <div class="current-room"></div>
+      <input class="room-name" placeholder="New Room">
+
+   
+      <div class="container">
+        <input class="message-text" placeholder="Message"> <br>
+        <a href="#" id="submit">Submit</a>
+      </div>
+    
+
       <div class="messages">
       </div>
     </div>
